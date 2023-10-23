@@ -9,6 +9,7 @@ from email.header import Header
 from email.mime.base import MIMEBase
 from email import encoders
 from io import TextIOWrapper
+import db_tools
 
 
 load_dotenv()
@@ -17,9 +18,10 @@ FROM_EMAIL = os.getenv("FROM_EMAIL")
 TO_EMAIL = os.getenv("TO_EMAIL")
 APP_PASS_MAIL = os.getenv("APP_PASS_MAIL")
 TO_ZAN_CHECK_MAIL = os.getenv("TO_ZAN_CHECK_MAIL")
-TO_MAIL_CHEK_MAIL = os.getenv("TO_MAIL_CHEK_MAIL")
+TO_MAIL_CHECK_MAIL = os.getenv("TO_MAIL_CHECK_MAIL")
+TO_MAIL_CHECK_ADMIN = os.getenv("TO_MAIL_CHECK_ADMIN")
 
-recipients = [TO_EMAIL, TO_ZAN_CHECK_MAIL, TO_MAIL_CHEK_MAIL]
+recipients = [TO_ZAN_CHECK_MAIL, TO_MAIL_CHECK_MAIL, TO_MAIL_CHECK_ADMIN]
 
 app = Flask(__name__)
 CORS(app)
@@ -50,10 +52,13 @@ def send_anketa_soiskatel():
         additionalInf =  request.form.get("additionalInf")
         summary = request.files["summary"]
 
+        db_tools.update_soiskatel_number()
+        anket_number = db_tools.get_soiskatel_number()
+
         msg = MIMEMultipart()
         msg['From'] = FROM_EMAIL
         msg['To'] = ", ".join(recipients)
-        msg['Subject'] = "Анкета соискателя Сайт Курс на Север!"
+        msg['Subject'] = f"Анкета соискателя Сайт Курс на Север! {anket_number}"
 
         body = f"""
         Фамилия: {surname}\n
@@ -116,10 +121,13 @@ def send_anketa_employer():
         email = request.form.get("email")
         CompanyCard = request.files["CompanyCard"]
 
+        db_tools.update_employer_number()
+        anket_number = db_tools.get_employer_number()
+
         msg = MIMEMultipart()
         msg['From'] = FROM_EMAIL
         msg['To'] = ", ".join(recipients)
-        msg['Subject'] = "Анкета работодателя Сайт Курс на Север!"
+        msg['Subject'] = f"Анкета работодателя Сайт Курс на Север! {anket_number}"
 
         body = f"""
         Полное наименование: {nameCompany}\n
