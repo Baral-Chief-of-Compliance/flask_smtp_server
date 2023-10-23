@@ -105,6 +105,3 @@ def create_db():
     connection.commit()
 
     connection.close()
-
-
-create_db()

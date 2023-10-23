@@ -21,7 +21,7 @@ TO_ZAN_CHECK_MAIL = os.getenv("TO_ZAN_CHECK_MAIL")
 TO_MAIL_CHECK_MAIL = os.getenv("TO_MAIL_CHECK_MAIL")
 TO_MAIL_CHECK_ADMIN = os.getenv("TO_MAIL_CHECK_ADMIN")
 
-recipients = [TO_ZAN_CHECK_MAIL, TO_MAIL_CHECK_MAIL, TO_MAIL_CHECK_ADMIN]
+recipients = [TO_ZAN_CHECK_MAIL, TO_MAIL_CHECK_MAIL]
 
 app = Flask(__name__)
 CORS(app)
@@ -51,7 +51,7 @@ def send_anketa_soiskatel():
         positionAtLastJob =  request.form.get("positionAtLastJob")
         additionalInf =  request.form.get("additionalInf")
         summary = request.files["summary"]
-
+    
         db_tools.update_soiskatel_number()
         anket_number = db_tools.get_soiskatel_number()
 
@@ -102,6 +102,27 @@ def send_anketa_soiskatel():
 
         text = msg.as_string()
         server.sendmail(FROM_EMAIL, recipients, text)
+        server.quit()
+
+
+        msg_for_sender = MIMEMultipart()
+        msg_for_sender['From'] = FROM_EMAIL
+        msg_for_sender['To'] = email
+        msg_for_sender['Subject'] = "Спасибо за участие в программе Курс на Север!"
+
+        body = f'''
+Ваше обращение зарегистрировано под номером {anket_number}\n
+Это автоматическая рассылка. Пожалуйста, не надо отвечать на это письмо.
+        '''
+
+        msg_for_sender.attach(MIMEText(body, 'plain'))
+
+        server = smtplib.SMTP_SSL('smtp.mail.ru', 465)
+
+        server.login(FROM_EMAIL, APP_PASS_MAIL)
+
+        text = msg_for_sender.as_string()
+        server.sendmail(FROM_EMAIL, email, text)
         server.quit()
 
 
@@ -167,6 +188,26 @@ def send_anketa_employer():
 
         text = msg.as_string()
         server.sendmail(FROM_EMAIL, recipients, text)
+        server.quit()
+
+        msg_for_sender = MIMEMultipart()
+        msg_for_sender['From'] = FROM_EMAIL
+        msg_for_sender['To'] = email
+        msg_for_sender['Subject'] = "Спасибо за участие в программе Курс на Север!"
+
+        body = f'''
+Ваше обращение зарегистрировано под номером {anket_number}\n
+Это автоматическая рассылка. Пожалуйста, не надо отвечать на это письмо.
+        '''
+
+        msg_for_sender.attach(MIMEText(body, 'plain'))
+
+        server = smtplib.SMTP_SSL('smtp.mail.ru', 465)
+
+        server.login(FROM_EMAIL, APP_PASS_MAIL)
+
+        text = msg_for_sender.as_string()
+        server.sendmail(FROM_EMAIL, email, text)
         server.quit()
 
         return "Status Ok", 200
