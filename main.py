@@ -16,6 +16,10 @@ load_dotenv()
 FROM_EMAIL = os.getenv("FROM_EMAIL")
 TO_EMAIL = os.getenv("TO_EMAIL")
 APP_PASS_MAIL = os.getenv("APP_PASS_MAIL")
+TO_ZAN_CHECK_MAIL = os.getenv("TO_ZAN_CHECK_MAIL")
+TO_MAIL_CHEK_MAIL = os.getenv("TO_MAIL_CHEK_MAIL")
+
+recipients = [TO_EMAIL, TO_ZAN_CHECK_MAIL, TO_MAIL_CHEK_MAIL]
 
 app = Flask(__name__)
 CORS(app)
@@ -48,7 +52,7 @@ def send_anketa_soiskatel():
 
         msg = MIMEMultipart()
         msg['From'] = FROM_EMAIL
-        msg['To'] = TO_EMAIL
+        msg['To'] = ", ".join(recipients)
         msg['Subject'] = "Анкета соискателя Сайт Курс на Север!"
 
         body = f"""
@@ -92,7 +96,7 @@ def send_anketa_soiskatel():
 
 
         text = msg.as_string()
-        server.sendmail(FROM_EMAIL, TO_EMAIL, text)
+        server.sendmail(FROM_EMAIL, recipients, text)
         server.quit()
 
 
@@ -114,7 +118,7 @@ def send_anketa_employer():
 
         msg = MIMEMultipart()
         msg['From'] = FROM_EMAIL
-        msg['To'] = TO_EMAIL
+        msg['To'] = ", ".join(recipients)
         msg['Subject'] = "Анкета работодателя Сайт Курс на Север!"
 
         body = f"""
@@ -154,7 +158,7 @@ def send_anketa_employer():
 
 
         text = msg.as_string()
-        server.sendmail(FROM_EMAIL, TO_EMAIL, text)
+        server.sendmail(FROM_EMAIL, recipients, text)
         server.quit()
 
         return "Status Ok", 200
