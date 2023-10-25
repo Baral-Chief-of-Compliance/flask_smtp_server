@@ -14,6 +14,8 @@ def get_soiskatel_number():
 
     last_application = cursor.fetchone()
 
+    connection.close()
+
     number_ap = str(last_application[0])
     date_ap = last_application[1]
 
@@ -51,6 +53,8 @@ def get_employer_number():
     cursor.execute("select max(application_id), application_date  from Employer")
 
     last_application = cursor.fetchone()
+
+    connection.close()
 
     number_ap = str(last_application[0])
     date_ap = last_application[1]

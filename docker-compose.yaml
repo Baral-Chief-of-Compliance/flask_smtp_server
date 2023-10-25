@@ -1,0 +1,25 @@
+version: "3"
+services:
+  redis:
+    image: redislabs/redismod
+    ports:
+      - '6379:6379'
+
+  smtp-server:
+    build: ./smtp_server
+    container_name: smtp_server
+    restart: always
+    networks:
+      - network
+
+    ports:
+      - "5000:5000"
+
+  bot-logger:
+    build: ./bot_logger
+    container_name: bot_logger
+    restart: always
+
+networks:
+  network:
+    driver: bridge

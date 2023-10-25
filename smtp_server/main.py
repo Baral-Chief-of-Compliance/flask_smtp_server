@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -25,6 +25,23 @@ recipients = [TO_EMAIL, TO_ZAN_CHECK_MAIL, TO_MAIL_CHECK_MAIL, TO_MAIL_CHECK_ADM
 
 app = Flask(__name__)
 CORS(app)
+
+
+@app.route("/")
+def hello():
+    return "Hello, World!"
+
+
+@app.route("/API/v1.0/example_vacancy_registration", methods=['GET',])
+def get_example_vacancy_registration():
+    if request.method == 'GET':
+        return send_file("upload/exampleVacancyRegistration.xlsx", download_name="Пример заполнения таблицы.xlsx")
+    
+
+@app.route("/API/v1.0/policy_personal_data", methods=['GET',])
+def get_policy_data():
+    if request.method == 'GET':
+        return send_file("upload/policyPD.pdf", download_name="Политика о персональных данных ГОБУ ЦЗН Мурманской области.pdf", as_attachment=True)
 
 
 @app.route("/API/v1.0/anketa_soiskatel", methods=['POST',])
@@ -215,4 +232,4 @@ def send_anketa_employer():
         return "Method Not Allowed", 405
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')
